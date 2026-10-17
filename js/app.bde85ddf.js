@@ -754,10 +754,10 @@
                   case 6:
                     t.tableData.push(e), t.$notify.success({ title: "解锁成功", message: "成功解锁 " + e.title, duration: 3e3 });
                   case 8:
-                    n = [e.title, e.artist, e.album], window._paq.push(["trackEvent", "Unlock", e.rawExt + "," + e.mime, JSON.stringify(n)]);
+                    n = [e.title, e.artist, e.album];
                   case 9:
                   case "end":
-                    return r.stop() } }), r) })))() }, showFail: function(e, t) { console.error(e, t), this.$notify.error({ title: "出现问题", message: e + "，" + t + '，参考<a target="_blank" href="https://git.unlock-music.dev/um/web/wiki/使用提示">使用提示</a>', dangerouslyUseHTMLString: !0, duration: 6e3 }), window._paq.push(["trackEvent", "Error", String(e), t]) }, changePlaying: function(e) { this.playing_url = e, this.playing_auto = !0 }, handleDeleteAll: function() { this.tableData.forEach((function(e) { Object(o["f"])(e) })), this.tableData = [] }, handleDecryptionConfig: function() { this.showConfigDialog = !0 }, handleDownloadAll: function() { var e = this,
+                    return r.stop() } }), r) })))() }, showFail: function(e, t) { console.error(e, t), this.$notify.error({ title: "出现问题", message: e + "，" + t + '，参考<a target="_blank" href="https://git.unlock-music.dev/um/web/wiki/使用提示">使用提示</a>', dangerouslyUseHTMLString: !0, duration: 6e3 }) }, changePlaying: function(e) { this.playing_url = e, this.playing_auto = !0 }, handleDeleteAll: function() { this.tableData.forEach((function(e) { Object(o["f"])(e) })), this.tableData = [] }, handleDecryptionConfig: function() { this.showConfigDialog = !0 }, handleDownloadAll: function() { var e = this,
               t = 0,
               r = setInterval((function() { t < e.tableData.length ? (e.saveFile(e.tableData[t]), t++) : clearInterval(r) }), 300) }, handleEdit: function(t) { var r = this; return Object(n["a"])(regeneratorRuntime.mark((function n() { var i, a, c, s, o, f, d, m; return regeneratorRuntime.wrap((function(n) { while (1) switch (n.prev = n.next) {
                   case 0:

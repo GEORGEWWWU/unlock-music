@@ -194,6 +194,210 @@
     })();
   </script>
 
+  <!-- 自绘底部播放器（脚本初始化） -->
+  <div class="um-player" id="um-player" hidden></div>
+
+  <script>
+    /* ============ 设置本地记忆（localStorage） ============ */
+    (function () {
+      var KEY = 'um.conf.home';
+
+      function findHome(vm, depth) {
+        if (!vm || depth > 8) return null;
+        if (vm.$options && vm.$options.name === 'Home') return vm;
+        var cs = vm.$children || [];
+        for (var i = 0; i < cs.length; i++) {
+          var r = findHome(cs[i], depth + 1);
+          if (r) return r;
+        }
+        return null;
+      }
+
+      function getHome() {
+        var root = document.getElementById('app');
+        var vm = root && root.__vue__;
+        return vm ? findHome(vm, 0) : null;
+      }
+
+      function read() {
+        try {
+          return JSON.parse(localStorage.getItem(KEY)) || {};
+        } catch (e) {
+          return {};
+        }
+      }
+
+      function write(patch) {
+        var s = read();
+        for (var k in patch) s[k] = patch[k];
+        try {
+          localStorage.setItem(KEY, JSON.stringify(s));
+        } catch (e) {}
+      }
+
+      function init() {
+        var home = getHome();
+        if (!home) return setTimeout(init, 120);
+        var s = read();
+        if (typeof s.policy === 'number') {
+          // 恢复「立即保存」时临时屏蔽目录选择弹窗
+          var orig = home.showDirectlySave;
+          home.showDirectlySave = function () {};
+          home.filename_policy = s.policy;
+          if (typeof s.instant_save === 'boolean') home.instant_save = s.instant_save;
+          home.showDirectlySave = orig;
+        }
+        home.$watch('filename_policy', function (v) {
+          write({ policy: v });
+        });
+        home.$watch('instant_save', function (v) {
+          write({ instant_save: v });
+        });
+      }
+
+      init();
+    })();
+
+    /* ============ 自绘底部播放器 ============ */
+    (function () {
+      var SVG_PLAY = '<svg viewBox="0 0 24 24"><path d="M8 5.2v13.6L19 12z"/></svg>';
+      var SVG_PAUSE = '<svg viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></svg>';
+      var SVG_CLOSE = '<svg viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>';
+
+      function fmt(t) {
+        if (!isFinite(t) || t < 0) t = 0;
+        var m = Math.floor(t / 60),
+          s = Math.floor(t % 60);
+        return m + ':' + (s < 10 ? '0' : '') + s;
+      }
+
+      function init() {
+        var audio = document.querySelector('.el-main audio');
+        if (!audio) return setTimeout(init, 150);
+        audio.removeAttribute('controls');
+        try {
+          audio.controls = false;
+        } catch (e) {}
+
+        var bar = document.getElementById('um-player');
+        bar.innerHTML =
+          '<div class="um-player__row">' +
+          '<div class="um-player__cover"></div>' +
+          '<div class="um-player__meta">' +
+          '<div class="um-player__title"></div>' +
+          '<div class="um-player__artist"></div>' +
+          '</div>' +
+          '<div class="um-player__center">' +
+          '<button type="button" class="um-player__btn um-player__btn--play" data-tip="播放 / 暂停">' +
+          SVG_PAUSE +
+          '</button>' +
+          '<span class="um-player__time um-player__cur">0:00</span>' +
+          '<div class="um-player__bar"><div class="um-player__fill"></div></div>' +
+          '<span class="um-player__time um-player__dur">0:00</span>' +
+          '</div>' +
+          '<button type="button" class="um-player__close" data-tip="关闭播放器">' +
+          SVG_CLOSE +
+          '</button>' +
+          '</div>';
+
+        var cover = bar.querySelector('.um-player__cover');
+        var title = bar.querySelector('.um-player__title');
+        var artist = bar.querySelector('.um-player__artist');
+        var cur = bar.querySelector('.um-player__cur');
+        var dur = bar.querySelector('.um-player__dur');
+        var fill = bar.querySelector('.um-player__fill');
+        var track = bar.querySelector('.um-player__bar');
+        var playBtn = bar.querySelector('.um-player__btn--play');
+        var closeBtn = bar.querySelector('.um-player__close');
+
+        function findHome(vm, depth) {
+          if (!vm || depth > 8) return null;
+          if (vm.$options && vm.$options.name === 'Home') return vm;
+          var cs = vm.$children || [];
+          for (var i = 0; i < cs.length; i++) {
+            var r = findHome(cs[i], depth + 1);
+            if (r) return r;
+          }
+          return null;
+        }
+
+        function rowOf(src) {
+          var root = document.getElementById('app');
+          var vm = root && root.__vue__;
+          var home = vm ? findHome(vm, 0) : null;
+          if (!home || !home.tableData) return null;
+          for (var i = 0; i < home.tableData.length; i++) {
+            if (home.tableData[i].file === src) return home.tableData[i];
+          }
+          return null;
+        }
+
+        function show() {
+          var src = audio.getAttribute('src');
+          if (!src) return;
+          var row = rowOf(src);
+          if (row) {
+            title.textContent = row.title || '未知曲目';
+            artist.textContent = row.artist || '';
+            cover.style.backgroundImage = row.picture ? 'url(' + row.picture + ')' : 'none';
+          }
+          bar.hidden = false;
+          document.documentElement.classList.add('um-playing');
+          var p = audio.play();
+          if (p && p.catch) p.catch(function () {});
+        }
+
+        new MutationObserver(show).observe(audio, { attributes: true, attributeFilter: ['src'] });
+
+        playBtn.addEventListener('click', function () {
+          if (audio.paused) {
+            var p = audio.play();
+            if (p && p.catch) p.catch(function () {});
+          } else {
+            audio.pause();
+          }
+        });
+
+        track.addEventListener('click', function (e) {
+          var r = track.getBoundingClientRect();
+          var ratio = (e.clientX - r.left) / r.width;
+          if (isFinite(audio.duration)) audio.currentTime = ratio * audio.duration;
+        });
+
+        closeBtn.addEventListener('click', function () {
+          audio.pause();
+          audio.removeAttribute('src');
+          try {
+            audio.load();
+          } catch (e) {}
+          bar.hidden = true;
+          document.documentElement.classList.remove('um-playing');
+        });
+
+        audio.addEventListener('play', function () {
+          playBtn.innerHTML = SVG_PAUSE;
+        });
+        audio.addEventListener('pause', function () {
+          playBtn.innerHTML = SVG_PLAY;
+        });
+        audio.addEventListener('ended', function () {
+          playBtn.innerHTML = SVG_PLAY;
+        });
+        audio.addEventListener('loadedmetadata', function () {
+          dur.textContent = fmt(audio.duration);
+        });
+        audio.addEventListener('timeupdate', function () {
+          cur.textContent = fmt(audio.currentTime);
+          if (isFinite(audio.duration) && audio.duration > 0) {
+            fill.style.width = (audio.currentTime / audio.duration) * 100 + '%';
+          }
+        });
+      }
+
+      init();
+    })();
+  </script>
+
   <script src="./loader.js"></script>
   <script src="js/chunk-vendors.0619865c.js"></script>
   <script src="js/app.bde85ddf.js"></script>

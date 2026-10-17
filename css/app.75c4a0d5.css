@@ -1101,3 +1101,547 @@ html:not(.settings-open) #app-control {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* =========================================================================
+   13. 设置收起时：抽屉隐藏，但保留其中的弹窗（编辑标签 / 解密设定）
+   ========================================================================= */
+html:not(.settings-open) #app-control {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  overflow: visible;
+  animation: none;
+  z-index: 2000;
+}
+
+html:not(.settings-open) #app-control > .el-row {
+  display: contents;
+}
+
+html:not(.settings-open) #app-control > .el-row.mb-3 {
+  display: none;
+}
+
+html:not(.settings-open) #app-control .el-button,
+html:not(.settings-open) #app-control .el-checkbox {
+  display: none;
+}
+
+/* =========================================================================
+   14. 结果列表：表头与每一首歌都是独立悬浮卡片
+   ========================================================================= */
+.el-table__header-wrapper,
+.el-table__body-wrapper {
+  display: block;
+  width: 100%;
+  background: transparent;
+  overflow: visible !important;
+}
+
+.el-table__header,
+.el-table__body {
+  display: block !important;
+  width: 100% !important;
+  border-collapse: separate;
+}
+
+.el-table__header thead,
+.el-table__header tr,
+.el-table__header th,
+.el-table__body tbody,
+.el-table__body tr,
+.el-table__body td {
+  display: block;
+}
+
+.el-table__header tr,
+.el-table__body tr {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 0 10px;
+  padding: 10px 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  transition: box-shadow 0.18s var(--ease), transform 0.18s var(--ease),
+    border-color 0.18s var(--ease);
+}
+
+.el-table__header tr {
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: var(--surface-2);
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.el-table__body tr:hover {
+  box-shadow: var(--sh-2);
+  transform: translateY(-1px);
+}
+
+.el-table th.el-table__cell,
+.el-table td.el-table__cell {
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.el-table th.el-table__cell:nth-child(1),
+.el-table td.el-table__cell:nth-child(1) {
+  flex: 0 0 52px;
+}
+
+.el-table th.el-table__cell:nth-child(2),
+.el-table td.el-table__cell:nth-child(2) {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.el-table th.el-table__cell:nth-child(3),
+.el-table td.el-table__cell:nth-child(3) {
+  flex: 0 0 110px;
+}
+
+.el-table th.el-table__cell:nth-child(4),
+.el-table td.el-table__cell:nth-child(4) {
+  flex: 0 0 140px;
+}
+
+.el-table th.el-table__cell:nth-child(5),
+.el-table td.el-table__cell:nth-child(5) {
+  flex: 0 0 auto;
+}
+
+/* 封面 */
+.el-table td.el-table__cell:nth-child(1) .el-image {
+  width: 48px !important;
+  height: 48px !important;
+}
+
+.el-table td.el-table__cell:nth-child(1) img {
+  width: 48px !important;
+  height: 48px !important;
+  object-fit: cover;
+  border-radius: var(--r-sm);
+}
+
+/* 文本：单行省略，卡片不被裁切 */
+.el-table .cell {
+  overflow: visible;
+  padding: 0 8px;
+  line-height: 1.4;
+}
+
+.el-table .cell > p {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.el-table td.el-table__cell:nth-child(2) .cell > p {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.el-table td.el-table__cell:nth-child(3) .cell > p,
+.el-table td.el-table__cell:nth-child(4) .cell > p {
+  color: var(--text-2);
+  font-size: 13px;
+}
+
+/* =========================================================================
+   15. 行内操作：播放 / 编辑 / 删除 为图标按钮，下载为独立填充按钮
+   ========================================================================= */
+.el-table td.el-table__cell:nth-child(5) .cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-right: 0;
+}
+
+.el-table td.el-table__cell:nth-child(5) .el-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  padding: 0;
+  margin: 0;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text-2);
+  box-shadow: none;
+}
+
+.el-table td.el-table__cell:nth-child(5) .el-button i {
+  margin: 0;
+  font-size: 15px;
+  color: inherit;
+}
+
+.el-table td.el-table__cell:nth-child(5) .el-button:hover {
+  background: var(--surface-2);
+  border-color: var(--line-strong);
+  color: var(--text);
+}
+
+.el-table td.el-table__cell:nth-child(5) .el-button--success {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+  background: var(--accent-weak);
+}
+
+.el-table td.el-table__cell:nth-child(5) .el-button--success:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.el-table td.el-table__cell:nth-child(5) .el-button--danger {
+  color: var(--danger);
+  border-color: color-mix(in srgb, var(--danger) 30%, transparent);
+  background: var(--danger-weak);
+}
+
+.el-table td.el-table__cell:nth-child(5) .el-button--danger:hover {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #fff;
+}
+
+/* 下载：填充 + 圆角 + 文字，独立在最右 */
+.el-table td.el-table__cell:nth-child(5) .el-button:has(.el-icon-download) {
+  width: auto;
+  min-width: 0;
+  padding: 0 14px;
+  margin-left: 4px;
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 550;
+  font-size: 12.5px;
+  --tip: "下载";
+  --label: "下载";
+}
+
+.el-table td.el-table__cell:nth-child(5) .el-button:has(.el-icon-download)::after {
+  content: var(--label);
+  margin-left: 6px;
+}
+
+.el-table td.el-table__cell:nth-child(5) .el-button:has(.el-icon-download):hover {
+  background: var(--accent-press);
+  border-color: var(--accent-press);
+  color: #fff;
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--accent) 26%, transparent);
+}
+
+/* 悬浮提示：自绘气泡，不用原生 title */
+.el-table td.el-table__cell:nth-child(5) .el-button:has(.el-icon-video-play) {
+  --tip: "播放";
+}
+
+.el-table td.el-table__cell:nth-child(5) .el-button:has(.el-icon-edit) {
+  --tip: "编辑标签";
+}
+
+.el-table td.el-table__cell:nth-child(5) .el-button:has(.el-icon-delete) {
+  --tip: "删除";
+}
+
+.el-table td.el-table__cell:nth-child(5) .el-button::before {
+  content: var(--tip, "");
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #2c2c2e;
+  color: #fff;
+  font-size: 11.5px;
+  line-height: 1.4;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.14s var(--ease);
+  z-index: 80;
+}
+
+.el-table td.el-table__cell:nth-child(5) .el-button:hover::before {
+  opacity: 1;
+}
+
+/* =========================================================================
+   16. 自绘底部播放器
+   ========================================================================= */
+.um-player {
+  position: fixed;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  z-index: 60;
+  width: min(720px, calc(100vw - 32px));
+  box-sizing: border-box;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-2);
+}
+
+.um-player[hidden] {
+  display: none;
+}
+
+.um-player__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.um-player__cover {
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  background-size: cover;
+  background-position: center;
+}
+
+.um-player__meta {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 220px;
+}
+
+.um-player__title {
+  font-size: 13.5px;
+  font-weight: 550;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.um-player__artist {
+  font-size: 12px;
+  color: var(--text-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.um-player__center {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.um-player__btn {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.16s var(--ease), transform 0.16s var(--ease);
+}
+
+.um-player__btn:hover {
+  background: var(--surface-2);
+  transform: scale(1.05);
+}
+
+.um-player__btn svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.um-player__btn--play {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.um-player__btn--play:hover {
+  background: var(--accent-press);
+}
+
+.um-player__time {
+  flex: 0 0 auto;
+  font-size: 11.5px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.um-player__bar {
+  flex: 1 1 auto;
+  min-width: 60px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--surface-2);
+  cursor: pointer;
+  position: relative;
+}
+
+.um-player__fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+.um-player__close {
+  flex: 0 0 auto;
+  border: none;
+  background: none;
+  color: var(--text-3);
+  cursor: pointer;
+  padding: 4px;
+  line-height: 0;
+  border-radius: var(--r-sm);
+}
+
+.um-player__close:hover {
+  color: var(--text);
+  background: var(--surface-2);
+}
+
+.um-player__close svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+/* 播放器出现时隐藏页脚 */
+html.um-playing #app-footer {
+  display: none;
+}
+
+/* =========================================================================
+   17. 移动端：卡片布局微调
+   ========================================================================= */
+@media (max-width: 720px) {
+  .el-table__header-wrapper {
+    display: none;
+  }
+
+  .el-table__body tr {
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    border-radius: var(--r-md);
+  }
+
+  .el-table th.el-table__cell:nth-child(3),
+  .el-table td.el-table__cell:nth-child(3),
+  .el-table th.el-table__cell:nth-child(4),
+  .el-table td.el-table__cell:nth-child(4) {
+    display: none;
+  }
+
+  .el-table td.el-table__cell:nth-child(1) {
+    flex: 0 0 44px;
+  }
+
+  .el-table td.el-table__cell:nth-child(1) .el-image,
+  .el-table td.el-table__cell:nth-child(1) img {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .el-table td.el-table__cell:nth-child(5) .cell {
+    gap: 6px;
+  }
+
+  .el-table td.el-table__cell:nth-child(5) .el-button {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+  }
+
+  .el-table td.el-table__cell:nth-child(5) .el-button:has(.el-icon-download) {
+    padding: 0 10px;
+    margin-left: 2px;
+  }
+
+  /* 小屏隐藏行内气泡提示（无鼠标悬浮） */
+  .el-table td.el-table__cell:nth-child(5) .el-button::before {
+    display: none;
+  }
+
+  .um-player {
+    bottom: 10px;
+    width: calc(100vw - 20px);
+    padding: 8px 10px;
+  }
+
+  .um-player__meta {
+    max-width: 120px;
+  }
+
+  .um-player__cover {
+    flex-basis: 34px;
+    width: 34px;
+    height: 34px;
+  }
+}
+
+/* 自绘气泡提示（播放器等） */
+[data-tip]{position:relative}
+[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);padding:4px 8px;border-radius:6px;background:#2c2c2e;color:#fff;font-size:11.5px;line-height:1.4;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .14s;z-index:90}
+[data-tip]:hover::after{opacity:1}
+@media (max-width:720px){[data-tip]:hover::after{display:none}}
+
+/* 封面占位：仅显示一块浅色方块，不显示文字 */
+.el-table td.el-table__cell:nth-child(1) .el-image__error {
+  font-size: 0;
+  background: var(--surface-2);
+  border-radius: var(--r-sm);
+  width: 48px;
+  height: 48px;
+}
+
+/* 列宽更均匀：歌曲 2 / 歌手 1 / 专辑 1 */
+.el-table th.el-table__cell:nth-child(2),
+.el-table td.el-table__cell:nth-child(2) { flex: 2 1 0; }
+
+.el-table th.el-table__cell:nth-child(3),
+.el-table td.el-table__cell:nth-child(3) { flex: 1 1 0; }
+
+.el-table th.el-table__cell:nth-child(4),
+.el-table td.el-table__cell:nth-child(4) { flex: 1 1 0; }

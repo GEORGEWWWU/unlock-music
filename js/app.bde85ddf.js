@@ -936,7 +936,7 @@
       z = (r("cf5e"), r("19c1"), r("d745"), r("00ef"), r("ed74")),
       Q = function() { var e = this,
           t = e.$createElement,
-          r = e._self._c || t; return r("el-container", { attrs: { id: "app" } }, [r("el-main", [r("Home")], 1), r("el-footer", { attrs: { id: "app-footer" } }, [r("div", [r("a", { attrs: { href: "https://git.unlock-music.dev/um/web", target: "_blank" } }, [e._v("音乐解锁")]), e._v("(" + e._s(e.version) + ") ：移除已购音乐的加密保护。 "), r("a", { attrs: { href: "https://git.unlock-music.dev/um/web/wiki/使用提示", target: "_blank" } }, [e._v("使用提示")])]), r("div", [e._v(" 目前支持 网易云音乐(ncm), QQ音乐(qmc, mflac, mgg), 酷狗音乐(kgm), 虾米音乐(xm), 酷我音乐(.kwm) "), r("a", { attrs: { href: "https://git.unlock-music.dev/um/web/src/branch/main/README.md", target: "_blank" } }, [e._v("更多")]), e._v("。 ")]), r("div", [r("span", [e._v("Copyright © 2019 - " + e._s((new Date).getFullYear()) + " MengYX")]), e._v(" 音乐解锁使用 "), r("a", { attrs: { href: "https://git.unlock-music.dev/um/web/src/branch/main/LICENSE", target: "_blank" } }, [e._v("MIT许可协议")]), e._v(" 开放源代码 ")])])], 1) },
+          r = e._self._c || t; return r("el-container", { attrs: { id: "app" } }, [r("el-main", [r("Home")], 1), r("el-footer", { attrs: { id: "app-footer" } }, [r("div", [r("a", { attrs: { href: "https://github.com/GEORGEWWWU/unlock-music", target: "_blank", rel: "noopener" } }, [e._v("GitHub 仓库")]), e._v(" · Copyright © 2019 - " + e._s((new Date).getFullYear()) + " MengYX")])])], 1) },
       V = [],
       K = r("dc77"),
       X = (r("2c09"), r("f701"), r("5631")),
@@ -952,21 +952,28 @@
       ae = Object(ie["a"])(ne, ee, te, !1, null, null, null),
       ce = ae.exports,
       se = r("b2bb"),
-      oe = { name: "app", components: { FileSelector: X["a"], PreviewTable: Y["a"], Home: ce }, data: function() { return { version: Z.version } }, created: function() { var e = this;
-          this.$nextTick((function() { return e.finishLoad() })) }, methods: { finishLoad: function() { var e = this; return Object(K["a"])(regeneratorRuntime.mark((function t() { var r, n; return regeneratorRuntime.wrap((function(t) { while (1) switch (t.prev = t.next) {
-                  case 0:
-                    return r = document.getElementById("loader-mask"), r && r.remove(), t.prev = 2, t.next = 5, Object(se["a"])(e.version);
-                  case 5:
-                    n = t.sent, t.next = 11; break;
-                  case 8:
-                    t.prev = 8, t.t0 = t["catch"](2), console.warn("check version info failed", t.t0);
-                  case 11:
-                    n && (n.HttpsFound || n.Found && "https:" !== window.location.protocol) ? e.$notify.warning({ title: "发现更新", message: "发现新版本 v".concat(n.Version, "<br/>更新详情：").concat(n.Detail, '<br/> <a target="_blank" href="').concat(n.URL, '">获取更新</a>'), dangerouslyUseHTMLString: !0, duration: 15e3, position: "top-left" }) : e.$notify.info({ title: "离线使用", message: '<div>\n                        <p>全部解密在本地完成，文件不会上传到任何服务器</p>\n                        <div class="update-info">\n                            <div class="update-title">最近更新</div>\n                            <div class="update-content"> '.concat(Z.updateInfo, ' </div>\n                        </div>\n                        <a target="_blank" href="https://git.unlock-music.dev/um/web/wiki/使用提示">使用提示</a>\n                    </div>'), dangerouslyUseHTMLString: !0, duration: 1e4, position: "top-left" });
-                  case 12:
-                  case "end":
-                    return t.stop() } }), t, null, [
-                [2, 8]
-              ]) })))() } } },
+      // [改造] app 根组件：移除版本检查与启动提示，只保留加载遮罩的收尾
+      oe = {
+        name: "app",
+        components: { FileSelector: X["a"], PreviewTable: Y["a"], Home: ce },
+        data: function() {
+          return { version: Z.version }
+        },
+        created: function() {
+          var e = this;
+          this.$nextTick(function() {
+            return e.finishLoad()
+          })
+        },
+        methods: {
+          finishLoad: function() {
+            // 只做一件事：移除首屏加载遮罩。
+            // 原版这里会请求在线接口检查版本并弹出"发现更新 / 离线使用"提示，现已删除。
+            var mask = document.getElementById("loader-mask");
+            mask && mask.remove();
+          }
+        }
+      },
       ue = oe,
       le = (r("7960"), Object(ie["a"])(ue, Q, V, !1, null, null, null)),
       fe = le.exports;

@@ -1,0 +1,14 @@
+# 依赖与本地工具（不进仓库）
+node_modules/
+.tools/
+.workbuddy/
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# 日志与临时产物
+*.log
+preview.png

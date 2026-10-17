@@ -1,0 +1,9 @@
+# 统一按 LF 存储，避免 Windows 下 CRLF 污染 web 资源
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary

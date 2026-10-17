@@ -1,65 +1,56 @@
 /* =========================================================================
-   音乐解锁 · 界面样式
-   依据（已查阅官方规格）：
-   · Apple HIG Typography —— iOS 文本样式：Large Title 31/38、Title 25/31、
-     Headline 17 semi、Body 17/22、Footnote 13/18、Caption 11/13，最小 11pt，
-     不使用 Light/Thin 细字重，字距靠字号自动收紧
-   · Material Design Color —— 中性灰阶 Gray 50 #FAFAFA / 200 #EEEEEE / 400 #BDBDBD
-     / 600 #757575 / 900 #212121；表面＝白，背景在内容之下，靠边界而非阴影分层
-   取舍：不用渐变、不用大圆角、不用彩色光晕；单一强调色，灰阶承载层级
+   音乐解锁 · 界面
+   结构：整页＝一块拖放画布。默认只有「上传」和右上角「设置」，
+        设置从右侧抽屉展开（移动端为底部面板）；解密出结果后画布收起成一条，
+        结果列表接管页面。
+   依据：Apple HIG 字号阶（Large Title 31/38、Body 15、Footnote 12、最小 11）
+        + Material 灰阶（#FAFAFA / #EEEEEE / #BDBDBD / #757575 / #212121）
+        + 单色强调、无渐变、无大圆角、无彩色阴影
    ========================================================================= */
 
 /* ---------- 1. Tokens ---------- */
 :root {
   color-scheme: light dark;
 
-  /* 表面（Material：background < surface，纯白承载内容） */
-  --bg: #f7f7f9;
+  --bg: #fafafa;
   --surface: #ffffff;
-  --surface-2: #f2f2f7;
-  --surface-3: #ebebf0;
+  --surface-2: #f4f4f5;
 
-  /* 文字（Material Gray 900 / 600 / 400 对应 iOS label / secondary / tertiary） */
   --text: #1c1c1e;
   --text-2: #6b6b70;
   --text-3: #9a9aa0;
 
-  /* 分隔线（iOS separator 同款透明度） */
-  --line: rgba(60, 60, 67, 0.12);
+  --line: rgba(60, 60, 67, 0.14);
   --line-2: rgba(60, 60, 67, 0.08);
 
-  /* 强调色：单一实色，无渐变 */
   --accent: #0071e3;
-  --accent-press: #0062c4;
-  --accent-weak: rgba(0, 113, 227, 0.08);
+  --accent-press: #0063c6;
+  --accent-weak: rgba(0, 113, 227, 0.07);
   --danger: #d70015;
   --danger-weak: rgba(215, 0, 21, 0.06);
 
-  /* 圆角：Material 小/中档，不用 20+ 的胶囊 */
   --r-sm: 6px;
   --r-md: 10px;
   --r-lg: 14px;
 
-  --sh-1: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --sh-2: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --sh-1: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --sh-2: 0 16px 48px rgba(0, 0, 0, 0.14);
 
-  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    /* iOS 深色：底色纯黑，内容层抬亮一档，靠 1px 描边分辨 */
     --bg: #000000;
     --surface: #1c1c1e;
     --surface-2: #2c2c2e;
-    --surface-3: #3a3a3c;
 
     --text: #f2f2f7;
     --text-2: #a1a1a8;
     --text-3: #8e8e93;
 
-    --line: rgba(84, 84, 88, 0.6);
-    --line-2: rgba(84, 84, 88, 0.36);
+    --line: rgba(84, 84, 88, 0.62);
+    --line-2: rgba(84, 84, 88, 0.34);
 
     --accent: #0a84ff;
     --accent-press: #409cff;
@@ -68,22 +59,27 @@
     --danger-weak: rgba(255, 69, 58, 0.12);
 
     --sh-1: none;
-    --sh-2: 0 12px 32px rgba(0, 0, 0, 0.6);
+    --sh-2: 0 20px 60px rgba(0, 0, 0, 0.7);
   }
 }
 
-/* ---------- 2. 手绘图标（SVG mask，颜色继承文字色） ---------- */
+/* ---------- 2. 自绘图标（SVG mask，跟随文字色） ---------- */
 :root {
-  --i-upload: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16.5V4.5"/><path d="m7.5 9 4.5-4.5L16.5 9"/><path d="M4 15.5v3A1.5 1.5 0 0 0 5.5 20h13A1.5 1.5 0 0 0 20 18.5v-3"/></svg>');
-  --i-download: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12"/><path d="m7 11.2 5 4.8 5-4.8"/><path d="M4 19h16"/></svg>');
-  --i-delete: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.5h16"/><path d="M9.5 6.5V4.8A.8.8 0 0 1 10.3 4h3.4a.8.8 0 0 1 .8.8v1.7"/><path d="m6.5 6.5 1 12.2a1.5 1.5 0 0 0 1.5 1.3h6a1.5 1.5 0 0 0 1.5-1.3l1-12.2"/><path d="M10.5 10.5v5.5M13.5 10.5v5.5"/></svg>');
-  --i-tools: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h9M17.5 7.5H20"/><path d="M4 16.5h3M11.5 16.5H20"/><circle cx="15.2" cy="7.5" r="2.3"/><circle cx="9.2" cy="16.5" r="2.3"/></svg>');
-  --i-info: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5"/><path d="M12 7.8v.4"/></svg>');
+  --i-upload: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16.5V4.5"/><path d="m7.5 9 4.5-4.5L16.5 9"/><path d="M4 15.5v3A1.5 1.5 0 0 0 5.5 20h13A1.5 1.5 0 0 0 20 18.5v-3"/></svg>');
+  --i-download: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12"/><path d="m7 11.2 5 4.8 5-4.8"/><path d="M4 19h16"/></svg>');
+  --i-delete: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.5h16"/><path d="M9.5 6.5V4.8A.8.8 0 0 1 10.3 4h3.4a.8.8 0 0 1 .8.8v1.7"/><path d="m6.5 6.5 1 12.2a1.5 1.5 0 0 0 1.5 1.3h6a1.5 1.5 0 0 0 1.5-1.3l1-12.2"/><path d="M10.5 10.5v5.5M13.5 10.5v5.5"/></svg>');
+  --i-tools: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h9M17.5 7.5H20"/><path d="M4 16.5h3M11.5 16.5H20"/><circle cx="15.2" cy="7.5" r="2.3"/><circle cx="9.2" cy="16.5" r="2.3"/></svg>');
+  --i-gear: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a1.9 1.9 0 1 1-2.7 2.7l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5v.2a1.9 1.9 0 1 1-3.8 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a1.9 1.9 0 1 1-2.7-2.7l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H4a1.9 1.9 0 1 1 0-3.8h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a1.9 1.9 0 1 1 2.7-2.7l.1.1a1.6 1.6 0 0 0 1.8.3H10a1.6 1.6 0 0 0 1-1.5V4a1.9 1.9 0 1 1 3.8 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a1.9 1.9 0 1 1 2.7 2.7l-.1.1a1.6 1.6 0 0 0-.3 1.8V10a1.6 1.6 0 0 0 1.5 1h.2a1.9 1.9 0 1 1 0 3.8h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>');
+  --i-info: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5"/><path d="M12 7.8v.4"/></svg>');
   --i-close: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>');
-  --i-edit: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 19.5h4L19 9a2.1 2.1 0 0 0-3-3L5.5 16.5v3z"/><path d="m14.8 6.8 2.4 2.4"/></svg>');
+  --i-edit: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 19.5h4L19 9a2.1 2.1 0 0 0-3-3L5.5 16.5v3z"/><path d="m14.8 6.8 2.4 2.4"/></svg>');
   --i-check: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.4 4.4L19 6.5"/></svg>');
-  --i-play: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.7" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="m10 8.6 6 3.4-6 3.4z"/></svg>');
-  --i-chevron: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>');
+  --i-play: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.6" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="m10 8.6 6 3.4-6 3.4z"/></svg>');
+}
+
+[class^="el-icon-"],
+[class*=" el-icon-"] {
+  font-family: inherit;
 }
 
 .el-icon-upload,
@@ -96,11 +92,10 @@
 .el-icon-check,
 .el-icon-video-play {
   display: inline-block;
-  width: 1.15em;
-  height: 1.15em;
+  width: 1em;
+  height: 1em;
   font-size: inherit;
-  font-family: inherit;
-  vertical-align: -0.18em;
+  vertical-align: -0.16em;
   background-color: currentColor;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
@@ -175,6 +170,7 @@
 html,
 body {
   height: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -205,23 +201,23 @@ a:hover {
 .app-header {
   position: sticky;
   top: 0;
-  z-index: 20;
+  z-index: 30;
   display: flex;
   align-items: center;
-  gap: 10px;
-  height: 52px;
-  padding: 0 24px;
+  gap: 9px;
+  height: 56px;
+  padding: 0 20px;
   box-sizing: border-box;
-  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
   border-bottom: 1px solid var(--line-2);
-  backdrop-filter: saturate(180%) blur(16px);
-  -webkit-backdrop-filter: saturate(180%) blur(16px);
+  backdrop-filter: saturate(180%) blur(18px);
+  -webkit-backdrop-filter: saturate(180%) blur(18px);
 }
 
 .app-header__logo {
-  width: 26px;
-  height: 26px;
-  border-radius: var(--r-sm);
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
   display: block;
 }
 
@@ -230,25 +226,62 @@ a:hover {
   font-size: 15px;
   font-weight: 600;
   letter-spacing: -0.01em;
-  color: var(--text);
 }
 
 .app-header__sub {
-  margin-left: 2px;
   font-size: 12px;
   color: var(--text-3);
+  letter-spacing: 0.02em;
 }
 
 .app-header__spacer {
   flex: 1 1 auto;
 }
 
-/* ---------- 5. 骨架 ---------- */
+/* 设置按钮：唯一的常驻操作 */
+.settings-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--text-2);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.16s var(--ease), color 0.16s var(--ease);
+}
+
+.settings-btn::before {
+  content: "";
+  width: 15px;
+  height: 15px;
+  background-color: currentColor;
+  -webkit-mask: var(--i-gear) no-repeat center/contain;
+  mask: var(--i-gear) no-repeat center/contain;
+  opacity: 0.75;
+}
+
+.settings-btn:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+html.settings-open .settings-btn {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
+}
+
+/* ---------- 5. 骨架：整页即画布 ---------- */
 #app {
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 52px);
-  background: transparent;
+  min-height: calc(100vh - 56px);
 }
 
 .el-main {
@@ -256,26 +289,28 @@ a:hover {
   display: flex;
   flex-direction: column;
   overflow: visible;
-  padding: 20px 24px 0;
+  padding: 0;
   box-sizing: border-box;
   width: 100%;
-  max-width: 1480px;
-  margin: 0 auto;
+}
+
+.el-main > div {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  padding: 0 20px 0;
+  box-sizing: border-box;
 }
 
 #app-footer.el-footer {
   height: auto !important;
   flex: 0 0 auto;
-  max-width: 1480px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 16px 24px 20px;
+  padding: 14px 20px 16px;
   box-sizing: border-box;
   background: transparent;
   border-top: 1px solid var(--line-2);
   color: var(--text-3);
   font-size: 12px;
-  line-height: 1.6;
   text-align: left;
 }
 
@@ -283,47 +318,7 @@ a:hover {
   color: var(--text-2);
 }
 
-#app-footer a:hover {
-  color: var(--accent);
-}
-
-/* PC：上排「上传 | 控制」，下方列表满宽，页面纵向填满 */
-@media (min-width: 960px) {
-  .el-main > div {
-    flex: 1 1 auto;
-    min-height: 0;
-    display: grid;
-    grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
-    grid-template-areas:
-      "upload control"
-      "table table"
-      "audio audio";
-    grid-template-rows: auto minmax(320px, 1fr) auto;
-    gap: 14px;
-    align-items: start;
-  }
-
-  .el-main > div > div:first-child {
-    grid-area: upload;
-    width: 100%;
-    min-width: 0;
-  }
-
-  #app-control {
-    grid-area: control;
-  }
-
-  .el-main > div > audio {
-    grid-area: audio;
-  }
-
-  .el-table {
-    grid-area: table;
-    align-self: stretch;
-  }
-}
-
-/* ---------- 6. 上传区 ---------- */
+/* ---------- 6. 拖放画布（默认态：占满一屏） ---------- */
 .el-upload,
 .el-upload-dragger {
   display: block;
@@ -333,75 +328,82 @@ a:hover {
 
 .el-upload-dragger {
   height: auto;
-  min-height: 196px;
+  min-height: calc(100vh - 56px - 150px);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  background: var(--surface);
-  border: 1px dashed var(--line);
+  gap: 2px;
+  padding: 40px 24px;
+  background: transparent;
+  border: 1px solid transparent;
   border-radius: var(--r-lg);
-  padding: 32px 20px;
   text-align: center;
-  transition: border-color 0.18s var(--ease), background 0.18s var(--ease);
+  transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
 }
 
 .el-upload-dragger:hover {
-  border-color: var(--accent);
   background: var(--surface);
+  border-color: var(--line-2);
 }
 
 .el-upload-dragger.is-dragover {
-  border-color: var(--accent);
   background: var(--accent-weak);
+  border-color: var(--accent);
 }
 
 .el-upload-dragger .el-icon-upload {
-  width: 30px;
-  height: 30px;
-  margin-bottom: 12px;
-  color: var(--text-2);
+  width: 34px;
+  height: 34px;
+  margin-bottom: 22px;
+  color: var(--text-3);
 }
 
-.el-upload__text {
-  color: var(--text-2);
-  font-size: 14px;
-  line-height: 1.5;
+/* 主标题：大字号打底，不靠装饰 */
+.el-upload-dragger .el-upload__text {
+  color: var(--text);
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1.28;
+  letter-spacing: -0.022em;
+  text-align: center;
 }
 
-.el-upload__text em {
+.el-upload-dragger .el-upload__text em {
   color: var(--accent);
   font-style: normal;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .el-upload__tip {
-  margin-top: 10px;
+  margin: 18px auto 0;
+  max-width: 520px;
+  text-align: center;
   color: var(--text-3);
-  font-size: 12px;
-  line-height: 1.8;
+  font-size: 12.5px;
+  line-height: 1.9;
 }
 
 .el-upload__tip i {
+  width: 12px;
+  height: 12px;
   color: var(--text-3);
   cursor: help;
-  width: 1em;
-  height: 1em;
 }
 
 .el-progress {
-  margin-top: 14px !important;
+  width: min(360px, 100%);
+  margin-top: 26px !important;
 }
 
 .el-progress-bar__outer {
-  background: var(--surface-3) !important;
-  border-radius: 3px !important;
+  background: var(--surface-2) !important;
+  border-radius: 2px !important;
 }
 
 .el-progress-bar__inner {
   background: var(--accent) !important;
-  border-radius: 3px !important;
+  border-radius: 2px !important;
 }
 
 .el-progress-bar__innerText {
@@ -410,30 +412,96 @@ a:hover {
   line-height: 14px;
 }
 
-/* ---------- 7. 控制条 ---------- */
+/* ---------- 7. 有结果后：画布收成一条，列表接管 ---------- */
+.el-table {
+  display: none;
+}
+
+.el-main > div:has(.el-table__body tr) .el-table {
+  display: block;
+}
+
+.el-main > div:has(.el-table__body tr) {
+  padding-bottom: 16px;
+}
+
+.el-main > div:has(.el-table__body tr) .el-upload-dragger {
+  min-height: 0;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 10px 4px;
+  border-color: transparent;
+  background: transparent;
+}
+
+.el-main > div:has(.el-table__body tr) .el-upload-dragger .el-icon-upload {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  color: var(--text-2);
+}
+
+.el-main > div:has(.el-table__body tr) .el-upload__text {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--text-2);
+}
+
+.el-main > div:has(.el-table__body tr) .el-upload__tip,
+.el-main > div:has(.el-table__body tr) .el-progress {
+  display: none;
+}
+
+.el-main > div:has(.el-table__body tr) > div:first-child {
+  border-bottom: 1px solid var(--line-2);
+}
+
+/* ---------- 8. 设置抽屉 ---------- */
+html:not(.settings-open) #app-control {
+  display: none;
+}
+
 #app-control {
+  position: fixed;
+  top: 64px;
+  right: 16px;
+  z-index: 40;
+  width: 340px;
+  max-height: calc(100vh - 88px);
+  overflow: auto;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 12px 14px;
+  gap: 14px;
+  padding: 16px;
+  box-sizing: border-box;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
+  box-shadow: var(--sh-2);
+  animation: sheet-in 0.22s var(--ease);
+}
+
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
 }
 
 #app-control > .el-row {
   display: flex;
-  align-items: center;
   flex-wrap: wrap;
+  align-items: center;
   gap: 8px;
 }
 
 #app-control > .el-row.mb-3 {
   margin: 0 !important;
-  display: inline-flex;
-  align-self: flex-start;
-  padding: 2px;
+  display: flex;
   gap: 2px;
+  padding: 2px;
   background: var(--surface-2);
   border-radius: var(--r-sm);
 }
@@ -449,8 +517,8 @@ a:hover {
 /* 命名格式：分段控件 */
 .el-radio {
   margin: 0 !important;
-  padding: 5px 11px;
-  border-radius: var(--r-sm);
+  padding: 5px 10px;
+  border-radius: 5px;
   transition: background 0.16s var(--ease), box-shadow 0.16s var(--ease);
 }
 
@@ -479,10 +547,10 @@ a:hover {
   font-weight: 550;
 }
 
-/* 按钮：Material 小圆角，实色，无发光 */
+/* 按钮 */
 .el-button {
   height: 32px;
-  padding: 0 14px;
+  padding: 0 12px;
   border-radius: var(--r-sm);
   border: 1px solid var(--line);
   background: var(--surface);
@@ -490,7 +558,6 @@ a:hover {
   font-size: 13px;
   font-weight: 500;
   box-shadow: none;
-  transition: background 0.16s var(--ease), border-color 0.16s var(--ease);
 }
 
 .el-button i {
@@ -506,7 +573,11 @@ a:hover {
   color: var(--text);
 }
 
-/* 第 2 个按钮「下载全部」= 主操作 */
+#app-control > .el-row > .el-button:nth-of-type(1),
+#app-control > .el-row > .el-button:nth-of-type(2) {
+  flex: 1 1 0;
+}
+
 #app-control > .el-row > .el-button:nth-of-type(2) {
   background: var(--accent);
   border-color: var(--accent);
@@ -524,7 +595,6 @@ a:hover {
   color: #fff;
 }
 
-/* 第 3 个按钮「清除全部」 */
 #app-control > .el-row > .el-button:nth-of-type(3) {
   color: var(--danger);
 }
@@ -535,11 +605,10 @@ a:hover {
 
 #app-control > .el-row > .el-button:nth-of-type(3):hover {
   background: var(--danger-weak);
-  border-color: var(--line);
   color: var(--danger);
 }
 
-/* 复选框「立即保存」 */
+/* 立即保存 */
 .el-checkbox.is-bordered {
   display: inline-flex;
   align-items: center;
@@ -548,10 +617,6 @@ a:hover {
   border-radius: var(--r-sm);
   border: 1px solid var(--line);
   background: var(--surface);
-}
-
-.el-checkbox.is-bordered:hover {
-  background: var(--surface-2);
 }
 
 .el-checkbox__inner {
@@ -577,11 +642,11 @@ a:hover {
   color: var(--text);
 }
 
-/* ---------- 8. 播放器 ---------- */
+/* ---------- 9. 播放器 ---------- */
 .el-main audio {
   width: 100%;
-  height: 40px;
-  margin: 0;
+  height: 38px;
+  margin: 0 0 12px;
   border-radius: var(--r-sm);
   background: var(--surface);
 }
@@ -590,15 +655,15 @@ a:hover {
   display: none;
 }
 
-/* ---------- 9. 列表 ---------- */
+/* ---------- 10. 结果列表：无边框、靠分隔线，铺满宽度 ---------- */
 .el-table {
   width: 100%;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--r-lg);
-  overflow: hidden;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
   color: var(--text);
-  box-shadow: var(--sh-1);
+  table-layout: fixed;
 }
 
 .el-table::before,
@@ -606,24 +671,31 @@ a:hover {
   display: none;
 }
 
+.el-table__header-wrapper table,
+.el-table__body-wrapper table {
+  width: 100% !important;
+  table-layout: fixed;
+}
+
 .el-table th.el-table__cell {
-  background: var(--surface-2);
+  background: transparent;
   border-bottom: 1px solid var(--line);
-  padding: 9px 0;
+  padding: 8px 0;
 }
 
 .el-table th.el-table__cell > .cell {
   color: var(--text-3);
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 .el-table td.el-table__cell {
   border-bottom: 1px solid var(--line-2);
-  padding: 10px 0;
+  padding: 9px 0;
   font-size: 13.5px;
+  vertical-align: middle;
 }
 
 .el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell {
@@ -635,14 +707,15 @@ a:hover {
 }
 
 .el-table .cell {
-  color: inherit;
-  padding: 0 14px;
+  padding: 0 10px;
   line-height: 1.45;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .el-table__empty-block {
-  min-height: 200px;
-  background: transparent;
+  min-height: 160px;
 }
 
 .el-table__empty-text {
@@ -653,9 +726,67 @@ a:hover {
 .el-table__body-wrapper,
 .el-table__header-wrapper {
   background: transparent;
+  overflow: visible !important;
 }
 
-/* ---------- 10. 弹窗 / 提示 ---------- */
+.el-table col:first-child {
+  width: 64px !important;
+}
+
+.el-table col:last-child {
+  width: 120px !important;
+}
+
+/* 行内操作：图标按钮，右对齐不换行 */
+.el-table td.el-table__cell:last-child .cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  flex-wrap: nowrap;
+}
+
+.el-table td.el-table__cell:last-child .el-button {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  padding: 0;
+  margin: 0;
+  border-color: transparent;
+  background: transparent;
+  color: var(--text-2);
+  flex: 0 0 auto;
+}
+
+.el-table td.el-table__cell:last-child .el-button i {
+  margin: 0;
+  font-size: 15px;
+  color: inherit;
+}
+
+.el-table td.el-table__cell:last-child .el-button:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.el-table .el-icon-download,
+.el-table .el-icon-delete,
+.el-table .el-icon-edit,
+.el-table .el-icon-video-play {
+  width: 15px;
+  height: 15px;
+}
+
+/* 封面列 */
+.el-table td.el-table__cell:first-child img {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-sm);
+  object-fit: cover;
+  display: block;
+}
+
+/* ---------- 11. 弹窗 / 提示 ---------- */
 .el-dialog {
   border-radius: var(--r-lg);
   background: var(--surface);
@@ -672,7 +803,6 @@ a:hover {
   color: var(--text);
   font-size: 16px;
   font-weight: 600;
-  letter-spacing: -0.01em;
 }
 
 .el-dialog__headerbtn {
@@ -700,7 +830,6 @@ a:hover {
   background: var(--accent) !important;
   border-color: var(--accent) !important;
   color: #fff !important;
-  font-weight: 550;
 }
 
 .v-modal {
@@ -712,14 +841,13 @@ a:hover {
   border-radius: var(--r-sm) !important;
   font-size: 12px;
   line-height: 1.6;
-  padding: 8px 10px !important;
-  max-width: 300px;
+  padding: 7px 10px !important;
+  max-width: 280px;
 }
 
 .el-tooltip__popper.is-dark {
   background: #2c2c2e !important;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.24);
 }
 
 .el-notification {
@@ -748,12 +876,6 @@ a:hover {
   box-shadow: var(--sh-2);
 }
 
-.el-message-box__title {
-  color: var(--text);
-  font-size: 15px;
-  font-weight: 600;
-}
-
 .el-input__inner,
 .el-textarea__inner {
   border-radius: var(--r-sm);
@@ -778,79 +900,199 @@ a:hover {
   border-radius: var(--r-md);
 }
 
-.el-table .el-icon-download,
-.el-table .el-icon-delete,
-.el-table .el-icon-edit,
-.el-table .el-icon-video-play {
-  width: 15px;
-  height: 15px;
-}
-
-/* ---------- 11. 响应式 ---------- */
-@media (max-width: 959px) {
+/* ---------- 12. 移动端：不出现任何横向滚动 ---------- */
+@media (max-width: 720px) {
   .app-header {
-    padding: 0 16px;
     height: 50px;
+    padding: 0 14px;
   }
 
   .app-header__sub {
     display: none;
   }
 
-  .el-main {
-    padding: 14px 14px 0;
+  #app {
+    min-height: calc(100vh - 50px);
   }
 
   .el-main > div {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  #app-control {
-    padding: 10px;
-  }
-
-  #app-control > .el-row.mb-3 {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-  }
-
-  .el-button {
-    flex: 1 1 auto;
-    height: 34px;
-    padding: 0 10px;
+    padding: 0 12px;
   }
 
   .el-upload-dragger {
-    min-height: 150px;
-    padding: 24px 14px;
+    min-height: calc(100vh - 50px - 130px);
+    padding: 28px 16px;
   }
 
-  .el-table .cell {
+  .el-upload-dragger .el-icon-upload {
+    width: 30px;
+    height: 30px;
+    margin-bottom: 16px;
+  }
+
+  .el-upload-dragger .el-upload__text {
+    font-size: 21px;
+    line-height: 1.35;
+    letter-spacing: -0.015em;
+  }
+
+  .el-upload__tip {
+    margin-top: 14px;
+    font-size: 12px;
+  }
+
+  /* 设置：底部面板，按钮整行堆叠，永远对齐 */
+  #app-control {
+    top: auto;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    width: auto;
+    max-height: 78vh;
+    padding: 14px;
+    border-radius: var(--r-lg);
+    animation: sheet-up 0.24s var(--ease);
+  }
+
+  @keyframes sheet-up {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+  }
+
+  #app-control > .el-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  #app-control > .el-row.mb-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+  }
+
+  #app-control > .el-row.mb-3 > span {
+    grid-column: 1 / -1;
+    padding: 0 2px 2px;
+  }
+
+  .el-radio {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 38px;
+    padding: 0 6px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-sm);
+    background: var(--surface-2);
+  }
+
+  .el-radio.is-checked {
+    background: var(--surface);
+    border-color: var(--text);
+    box-shadow: none;
+  }
+
+  .el-radio__label {
+    font-size: 13px;
+  }
+
+  #app-control > .el-row > .el-button:nth-of-type(n) {
+    flex: 0 0 auto;
+    width: 100%;
+    height: 40px;
     padding: 0 10px;
-  }
-
-  #app-footer.el-footer {
-    padding: 14px 14px 18px;
-  }
-}
-
-@media (max-width: 560px) {
-  #app-control > .el-row > .el-button {
-    flex: 1 1 46%;
-  }
-
-  .el-checkbox.is-bordered {
-    flex: 1 1 100%;
     justify-content: center;
   }
 
-  .el-table {
-    overflow-x: auto;
+  .el-checkbox.is-bordered {
+    display: flex;
+    flex: 0 0 auto;
+    width: 100%;
+    height: 38px;
+    justify-content: center;
+    box-sizing: border-box;
   }
 
+  /* 结果列表：小屏直接改成行式列表，彻底不横向滚动 */
+  .el-table__header-wrapper {
+    display: none !important;
+  }
+
+  .el-table__body,
+  .el-table__body tbody,
+  .el-table__body colgroup {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .el-table__body colgroup {
+    display: none !important;
+  }
+
+  .el-table__body tr {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--line-2);
+  }
+
+  .el-table__body tr:hover {
+    background: var(--surface-2);
+  }
+
+  .el-table__body td.el-table__cell {
+    display: block;
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 0 !important;
+    border: none !important;
+  }
+
+  .el-table__body td.el-table__cell:nth-child(1),
+  .el-table__body td.el-table__cell:nth-child(3),
+  .el-table__body td.el-table__cell:nth-child(4) {
+    display: none;
+  }
+
+  .el-table__body td.el-table__cell:last-child {
+    flex: 0 0 96px;
+  }
+
+  .el-table__body .cell {
+    padding: 0 6px;
+    font-size: 14px;
+  }
+
+  .el-table__empty-block {
+    width: 100% !important;
+  }
+
+  .el-table td.el-table__cell:last-child .cell {
+    gap: 2px;
+    padding-right: 0;
+  }
+
+  .el-table td.el-table__cell:last-child .el-button {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+  }
+
+  .el-table th.el-table__cell > .cell {
+    letter-spacing: 0.02em;
+  }
+
+  #app-footer.el-footer {
+    padding: 12px 14px 16px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

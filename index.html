@@ -10,30 +10,28 @@
   <meta content="音乐,解锁,ncm,qmc,mgg,mflac,qq音乐,网易云音乐,加密" name="keywords">
   <meta content="音乐解锁 - 在任何设备上解锁已购的加密音乐！" name="description">
   <meta name="color-scheme" content="light dark">
-  <meta name="theme-color" content="#f7f7f9" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 
   <style>
-    /* 首屏：只做一件事——别白屏，别闪 */
+    /* 首屏：只负责别白屏 */
     :root {
       color-scheme: light dark;
-      --l-bg: #f7f7f9;
-      --l-surface: #fff;
+      --l-bg: #fafafa;
       --l-text: #1c1c1e;
       --l-text-2: #6b6b70;
       --l-text-3: #9a9aa0;
-      --l-line: rgba(60, 60, 67, .12);
+      --l-line: rgba(60, 60, 67, .14);
       --l-accent: #0071e3;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
         --l-bg: #000;
-        --l-surface: #1c1c1e;
         --l-text: #f2f2f7;
         --l-text-2: #a1a1a8;
         --l-text-3: #8e8e93;
-        --l-line: rgba(84, 84, 88, .6);
+        --l-line: rgba(84, 84, 88, .62);
         --l-accent: #0a84ff;
       }
     }
@@ -58,7 +56,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 18px;
+      gap: 16px;
       padding: 24px;
       box-sizing: border-box;
       background: var(--l-bg);
@@ -66,8 +64,8 @@
     }
 
     #loader {
-      width: 26px;
-      height: 26px;
+      width: 22px;
+      height: 22px;
       border-radius: 50%;
       border: 2px solid var(--l-line);
       border-top-color: var(--l-accent);
@@ -83,7 +81,6 @@
     #loader-source {
       margin: 0;
       font-size: 12.5px;
-      font-weight: 400;
       color: var(--l-text-3);
     }
 
@@ -108,7 +105,7 @@
     }
 
     #loader-tips-timeout {
-      max-width: 620px;
+      max-width: 600px;
     }
 
     #loader-tips-outdated span {
@@ -147,7 +144,7 @@
     <h3 id="loader-source">请勿直接运行源代码！</h3>
     <div id="loader-tips-outdated" hidden>
       <h2>可能正在使用不受支持的浏览器</h2>
-      <h3>请使用较新版本的 <span>Edge / Chrome / Firefox</span>，或把双核浏览器切换到「极速模式」。</h3>
+      <h3>请使用较新版本的 <span>Edge / Chrome / Firefox</span>，或把双核浏览器切到「极速模式」。</h3>
     </div>
     <h3 id="loader-tips-timeout" hidden>
       建议使用 <a href="https://www.microsoft.com/zh-cn/edge" target="_blank" rel="noopener">Edge</a>
@@ -157,13 +154,46 @@
   </div>
 
   <header class="app-header">
-    <img class="app-header__logo" src="./img/icons/logo.png" alt="音乐解锁" width="26" height="26">
+    <img class="app-header__logo" src="./img/icons/logo.png" alt="音乐解锁" width="24" height="24">
     <h1 class="app-header__title">音乐解锁</h1>
     <span class="app-header__sub">Unlock Music</span>
     <span class="app-header__spacer"></span>
+    <button class="settings-btn" type="button" aria-expanded="false" aria-controls="app-control">设置</button>
   </header>
 
   <div id="app"></div>
+
+  <script>
+    /* 设置面板开关：默认收起，点空白处 / Esc 关闭 */
+    (function () {
+      var root = document.documentElement;
+      var btn = document.querySelector('.settings-btn');
+      var panel = null;
+
+      function setOpen(open) {
+        root.classList.toggle('settings-open', open);
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        setOpen(!root.classList.contains('settings-open'));
+      });
+
+      document.addEventListener('click', function (e) {
+        if (!root.classList.contains('settings-open')) return;
+        panel = panel || document.getElementById('app-control');
+        if (panel && panel.contains(e.target)) return;
+        if (btn.contains(e.target)) return;
+        setOpen(false);
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') setOpen(false);
+      });
+    })();
+  </script>
+
   <script src="./loader.js"></script>
   <script src="js/chunk-vendors.0619865c.js"></script>
   <script src="js/app.bde85ddf.js"></script>

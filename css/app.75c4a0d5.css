@@ -1947,3 +1947,6 @@ html:not(.settings-open) #app-control {
   gap: 8px;
   margin-bottom: 10px;
 }
+
+/* 行卡片 hover 不变阴影、不位移 */
+.el-table__body tr:hover { box-shadow: var(--sh-1) !important; transform: none !important; }

@@ -1,0 +1,51 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v5
+        with:
+          # 仓库尚未开启 Pages 时自动开启（源设为 GitHub Actions）
+          enablement: true
+
+      - name: Stage site files
+        run: |
+          # 只发布站点本身：不含 original/ 备份、README、serve.js
+          mkdir -p _site
+          cp -r index.html loader.js service-worker.js web-manifest.json \
+                precache-manifest.39a343512181680bf7ac081a179bd291.js \
+                js css img fonts _site/
+          touch _site/.nojekyll
+          du -sh _site
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

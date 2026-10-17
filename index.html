@@ -118,11 +118,13 @@
     }
   </style>
 
+  <link href="css/app.base.css" rel="preload" as="style">
   <link href="css/app.75c4a0d5.css" rel="preload" as="style">
   <link href="css/chunk-vendors.542af9af.css" rel="preload" as="style">
   <link href="js/app.bde85ddf.js" rel="preload" as="script">
   <link href="js/chunk-vendors.0619865c.js" rel="preload" as="script">
   <link href="css/chunk-vendors.542af9af.css" rel="stylesheet">
+  <link href="css/app.base.css" rel="stylesheet">
   <link href="css/app.75c4a0d5.css" rel="stylesheet">
 
   <link rel="icon" type="image/png" href="./img/icons/logo.png">
@@ -332,6 +334,21 @@
           return null;
         }
 
+        function playNow() {
+          try {
+            var p = audio.play();
+            if (p && p.catch) {
+              p.catch(function () {
+                setTimeout(function () {
+                  try {
+                    audio.play();
+                  } catch (e) {}
+                }, 120);
+              });
+            }
+          } catch (e) {}
+        }
+
         function show() {
           var src = audio.getAttribute('src');
           if (!src) return;
@@ -343,16 +360,14 @@
           }
           bar.hidden = false;
           document.documentElement.classList.add('um-playing');
-          var p = audio.play();
-          if (p && p.catch) p.catch(function () {});
+          playNow();
         }
 
         new MutationObserver(show).observe(audio, { attributes: true, attributeFilter: ['src'] });
 
         playBtn.addEventListener('click', function () {
           if (audio.paused) {
-            var p = audio.play();
-            if (p && p.catch) p.catch(function () {});
+            playNow();
           } else {
             audio.pause();
           }
@@ -366,13 +381,23 @@
 
         closeBtn.addEventListener('click', function () {
           audio.pause();
-          audio.removeAttribute('src');
-          try {
-            audio.load();
-          } catch (e) {}
           bar.hidden = true;
           document.documentElement.classList.remove('um-playing');
         });
+
+        /* 再次点击列表播放按钮：即使 src 没变也要重新唤起播放器 */
+        document.addEventListener(
+          'click',
+          function (e) {
+            var btn = e.target && e.target.closest ? e.target.closest('.el-table__body .el-button') : null;
+            if (!btn || !btn.querySelector('.el-icon-video-play')) return;
+            setTimeout(function () {
+              if (!audio.getAttribute('src')) return;
+              show();
+            }, 30);
+          },
+          true
+        );
 
         audio.addEventListener('play', function () {
           playBtn.innerHTML = SVG_PAUSE;

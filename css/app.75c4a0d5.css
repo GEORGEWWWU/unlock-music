@@ -1645,3 +1645,305 @@ html.um-playing #app-footer {
 
 .el-table th.el-table__cell:nth-child(4),
 .el-table td.el-table__cell:nth-child(4) { flex: 1 1 0; }
+
+/* =========================================================================
+   18. 清理 element-ui 全局残留（行悬浮灰底 / 表头下划线 / 表格外框线）
+   ========================================================================= */
+.el-table,
+.el-table__header-wrapper,
+.el-table__body-wrapper,
+.el-table__header,
+.el-table__body {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.el-table::before,
+.el-table::after {
+  display: none !important;
+}
+
+.el-table th.el-table__cell,
+.el-table th.el-table__cell.is-leaf,
+.el-table td.el-table__cell {
+  border-bottom: 0 !important;
+  background: transparent !important;
+}
+
+.el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell,
+.el-table__body tr:hover > td.el-table__cell {
+  background: transparent !important;
+}
+
+.el-table th.el-table__cell {
+  overflow: visible !important;
+}
+
+/* 表头与数据行共用同一套网格，列严格对齐 */
+.el-table__header tr,
+.el-table__body tr {
+  display: grid !important;
+  grid-template-columns: 64px minmax(0, 2.4fr) minmax(0, 1fr) minmax(0, 1fr) 198px;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  box-sizing: border-box;
+}
+
+.el-table__header th.el-table__cell,
+.el-table__body td.el-table__cell {
+  display: block;
+  width: auto !important;
+  min-width: 0;
+  padding: 0;
+}
+
+.el-table__body tr {
+  margin: 0 0 10px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-1);
+  transition: box-shadow 0.18s var(--ease), transform 0.18s var(--ease);
+}
+
+.el-table__body tr:hover {
+  box-shadow: var(--sh-2);
+  transform: translateY(-1px);
+}
+
+.el-table__header tr {
+  margin: 0 0 12px;
+  padding: 8px 14px;
+  background: var(--surface-2);
+  border: 1px solid transparent;
+  border-radius: var(--r-lg);
+}
+
+/* 顶部「重新选择文件」也做成独立卡片 */
+.el-main > div:has(.el-table__body tr) > div:first-child {
+  background: var(--surface);
+  border: 1px solid var(--line) !important;
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-1);
+  padding: 0 14px;
+  margin: 0 0 12px;
+}
+
+/* =========================================================================
+   19. 弹窗：层级与样式
+   ========================================================================= */
+html:not(.settings-open) #app-control {
+  z-index: 2012;
+}
+
+.el-dialog__wrapper {
+  z-index: 2011 !important;
+}
+
+.v-modal {
+  background: rgba(0, 0, 0, 0.4) !important;
+  opacity: 1 !important;
+  z-index: 2010 !important;
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+}
+
+.el-dialog {
+  width: min(560px, calc(100vw - 32px)) !important;
+  margin: 10vh auto 0 !important;
+  padding: 0;
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--sh-2);
+  overflow: hidden;
+}
+
+.el-dialog--center .el-dialog__body {
+  text-align: left;
+  padding: 6px 22px 18px;
+}
+
+.el-dialog__header {
+  padding: 18px 22px 10px;
+  border-bottom: 1px solid var(--line-2);
+}
+
+.el-dialog__title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.el-dialog__body {
+  color: var(--text-2);
+  font-size: 13.5px;
+  padding: 16px 22px;
+}
+
+.el-dialog__footer {
+  padding: 12px 22px 18px;
+  border-top: 1px solid var(--line-2);
+}
+
+.el-dialog__headerbtn {
+  top: 14px;
+  right: 14px;
+}
+
+/* 编辑弹窗内部 */
+.um-edit-dialog .el-form-item {
+  margin-bottom: 14px;
+}
+
+.um-edit-dialog .el-form-item__label {
+  color: var(--text-3);
+  font-size: 12px;
+  line-height: 1.6;
+  padding-bottom: 2px;
+}
+
+.um-edit-dialog .music-cover {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.um-edit-dialog .music-cover .el-image,
+.um-edit-dialog .music-cover img {
+  width: 96px;
+  height: 96px;
+  border-radius: var(--r-md);
+  object-fit: cover;
+  background: var(--surface-2);
+}
+
+.um-edit-dialog .el-upload-dragger {
+  min-height: 0;
+  height: 96px;
+  padding: 10px;
+  border: 1px dashed var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+}
+
+.um-edit-dialog .el-dialog__footer {
+  padding-top: 12px;
+}
+
+@media (max-width: 720px) {
+  .el-table__header tr,
+  .el-table__body tr {
+    grid-template-columns: 44px minmax(0, 1fr) 168px;
+    gap: 8px;
+    padding: 8px 10px;
+  }
+
+  .el-table__body td.el-table__cell:nth-child(3),
+  .el-table__body td.el-table__cell:nth-child(4) {
+    display: none !important;
+  }
+
+  .el-dialog {
+    margin: 6vh auto 0 !important;
+  }
+}
+
+/* 编辑弹窗：表单撑满、标签独占一行 */
+.um-edit-dialog .el-form-item {
+  display: block;
+  margin-bottom: 12px;
+}
+
+.um-edit-dialog .el-form-item__label {
+  display: block;
+  float: none;
+  width: auto !important;
+  text-align: left;
+  padding: 0 0 4px;
+  line-height: 1.5;
+}
+
+.um-edit-dialog .el-form-item__content {
+  display: block;
+  margin-left: 0 !important;
+  width: 100%;
+  line-height: normal;
+}
+
+.um-edit-dialog .el-input,
+.um-edit-dialog .el-textarea {
+  width: 100%;
+}
+
+.um-edit-dialog .el-input__inner {
+  height: 34px;
+  line-height: 34px;
+  font-size: 13px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  border-radius: var(--r-sm);
+}
+
+.um-edit-dialog .el-input__inner:focus {
+  border-color: var(--accent);
+  background: var(--surface);
+}
+
+.um-edit-dialog .el-dialog__body > .el-form > section {
+  display: block;
+}
+
+/* 编辑弹窗内的自定义行：标签右对齐 + 值 + 铅笔 */
+.um-edit-dialog .edit-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+}
+
+.um-edit-dialog .edit-item .label {
+  flex: 0 0 76px;
+  width: 76px;
+  text-align: right;
+  color: var(--text-3);
+  font-size: 12px;
+}
+
+.um-edit-dialog .edit-item .value {
+  flex: 1 1 auto;
+  min-height: 22px;
+  color: var(--text);
+  font-size: 13px;
+  text-align: left;
+  word-break: break-all;
+}
+
+.um-edit-dialog .edit-item .input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.um-edit-dialog .edit-item > i.el-icon-edit {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  color: var(--text-3);
+  cursor: pointer;
+}
+
+.um-edit-dialog .edit-item > i.el-icon-edit:hover {
+  color: var(--accent);
+}
+
+.um-edit-dialog .music-cover {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
